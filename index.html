@@ -27,12 +27,14 @@
         <div>
           <div class="input-group my-5">
             <input
+              id="todo-input"
               type="text"
               class="form-control"
               placeholder="Insert Task"
             />
             <div class="input-group-append">
               <button
+                id="todo-button-add"
                 class="btn btn-outline-secondary"
                 type="submit"
               >
@@ -48,7 +50,8 @@
               <th scope="col">Completed</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody id="task-list">
+          </tbody>
         </table>
       </div>
     </div>
@@ -68,6 +71,7 @@
       integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
       crossorigin="anonymous"
     ></script>
+    <script src="libraries/UUID.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
