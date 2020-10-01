@@ -3,8 +3,8 @@ const todoInput = document.getElementById("todo-input"); // in the HTML we have 
 const todoButtonAdd = document.getElementById("todo-button-add"); // in the HTML we have our + button id set to todo-button-add
 const todoTaskList = document.getElementById("task-list"); // inside our HTML we have our <tbody id="task-list"
 
-// our state of the application is a list of tasks
-let tasks = [];
+
+let todoList = new TodoList();
 
 // a function that renders our list of tasks
 function renderTasks() {
@@ -12,28 +12,13 @@ function renderTasks() {
   todoTaskList.innerHTML = "";
 
   // loop through all our tasks
-  tasks.forEach((t) => {
+  todoList.tasks.forEach((t) => {
     // create a <tr> </tr> element in our DOM
     const tableRow = document.createElement("tr");
     // set an attribute to tr so we can know which row relates to which task in our array (tasks). <tr task-id="some UUID we generated"></tr>
     tableRow.setAttribute("task-id", t.id);
     // depending on the state of the task (isCompleted being true or false) we render our tasks differently (the green circle)
-    if (t.isCompleted == false) {
-      // we add three <td></td> elements inside our <tr> element
-      // 
-      tableRow.innerHTML = `
-                <td>${t.text}</td>
-                <td><i data-action="complete-task" class="fa fa-circle-thin edit"></i></td>
-                <td><i data-action="delete-task" class="fa fa-trash-o edit" style="cursor: pointer;"></i></td>
-                `;
-    } else {
-      // we add three <td></td> elements inside our <tr> element
-      tableRow.innerHTML = `
-                <td>${t.text}</td>
-                <td><i data-action="complete-task" class="fa fa-circle edit" style="color:green"></i></td>
-                <td><i data-action="delete-task" class="fa fa-trash-o edit" style="cursor: pointer;"></i></td>
-                `;
-    }
+    tableRow.innerHTML = t.getHtmlOutput();
 
     // finally we add our newly created <tr> element to our DOM <tbody> element
     // todoTaskList is a variable that holds a reference to the <tbody> element
@@ -46,16 +31,9 @@ function renderTasks() {
 function addTask() {
   // get the text we want to add to our list of tasks
   let taskText = todoInput.value;
-  // create a task datastructure that contains the text, id, and a flag to see if the task is completed
-  // initially the task will not be completed
-  let task = {
-    id: UUID.generate(), // here we use our UUID library to generate a Universally Unique Identifier that we use to identify a specific task
-    text: taskText,
-    isCompleted: false,
-  };
-  // add the task we created to our list of tasks
-  tasks.push(task);
-  // render the list of tasks
+
+  let newTask = new Task(taskText);
+  todoList.addTask(newTask);
   renderTasks();
   // reset the input text to blank
   todoInput.value = "";
@@ -63,20 +41,11 @@ function addTask() {
 
 // function that removes a task from the array of tasks
 function deleteTask(taskId) {
-    // to remove an item at a specific index you can use splice
-    // we need to find which element to remove first, we can use findIndex for that
-    // findIndex takes in an arrow function that is the comparator 
-    // (inside tasks, find the task that has a property called id that is equal to the value of taskId)
-    let indexToRemove = tasks.findIndex(x => x.id == taskId);
-    tasks.splice(indexToRemove, 1);
+  todoList.removeTaskWithId(taskId)
 }
 
 function completeTask(taskId) {
-  tasks.forEach((t) => {
-      if (t.id == taskId) {
-        t.isCompleted = !t.isCompleted;
-      }
-    });
+  todoList.completeTaskWithId(taskId);
 }
 
 function performActionOnTask(e) {
